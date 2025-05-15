@@ -1,0 +1,97 @@
+<!DOCTYPE html><html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intel - Pelacak Kasus</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0e0e0e;
+      color: #00e0ff;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #00ffc8;
+    }
+    .case {
+      border: 1px solid #00e0ff;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      background-color: #1a1a1a;
+    }
+    .status {
+      font-style: italic;
+    }
+    button {
+      background-color: #00ffc8;
+      color: black;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 5px;
+      margin: 5px 0;
+      border-radius: 5px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Dashboard Intel</h1>
+  <div id="cases"></div>  <h2>Tambah Kasus Baru</h2>
+  <input id="caseName" placeholder="Nama Kasus">
+  <input id="target" placeholder="Target">
+  <textarea id="desc" placeholder="Deskripsi/Kronologi"></textarea>
+  <select id="status">
+    <option value="Belum dimulai">Belum dimulai</option>
+    <option value="Dalam investigasi">Dalam investigasi</option>
+    <option value="Selesai">Selesai</option>
+  </select>
+  <button onclick="addCase()">Tambah</button>  <script>
+    let cases = JSON.parse(localStorage.getItem('intelCases')) || [];
+
+    function saveCases() {
+      localStorage.setItem('intelCases', JSON.stringify(cases));
+    }
+
+    function renderCases() {
+      const container = document.getElementById('cases');
+      container.innerHTML = '';
+      cases.forEach((c, i) => {
+        container.innerHTML += `
+          <div class="case">
+            <strong>${i + 1}. ${c.name}</strong><br>
+            Target: ${c.target}<br>
+            Status: <span class="status">${c.status}</span><br>
+            <details><summary>Lihat Kronologi</summary>${c.desc}</details>
+          </div>
+        `;
+      });
+    }
+
+    function addCase() {
+      const name = document.getElementById('caseName').value;
+      const target = document.getElementById('target').value;
+      const desc = document.getElementById('desc').value;
+      const status = document.getElementById('status').value;
+
+      if (!name || !target || !desc) return alert('Semua kolom harus diisi!');
+
+      cases.push({ name, target, desc, status });
+      saveCases();
+      renderCases();
+
+      document.getElementById('caseName').value = '';
+      document.getElementById('target').value = '';
+      document.getElementById('desc').value = '';
+      document.getElementById('status').value = 'Belum dimulai';
+    }
+
+    renderCases();
+  </script></body>
+</html>
